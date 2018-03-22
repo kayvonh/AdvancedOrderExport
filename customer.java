@@ -56,4 +56,16 @@ public class customer {
         zip = fields[41];
         country = fields[43];
     }
+    
+    public String printIdentifier(int identifier)
+    {
+        switch(identifier){
+            case 0 : return name;
+            case 1 : return address1;
+            case 2 : return address2;
+            case 3 : return city + ", " + state + " " + zip;
+            case 4 : return country;
+            default: return "ERROR";
+        }
+    }
 }
