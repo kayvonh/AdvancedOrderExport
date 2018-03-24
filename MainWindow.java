@@ -8,24 +8,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 public class MainWindow extends javax.swing.JFrame {
 
     String csvFilePath, outputFilePath, templateFilePath;       // absolute directory locations
+    ArrayList<customer> customerList = new ArrayList<>();       // arraylist of unshipped customers
+    ButtonGroup storeList, fileNameGroup;
 
     public MainWindow() {
 
-        ArrayList<customer> customerList = new ArrayList<>();       // arraylist of unshipped customers
         initComponents();
         //Create for the CSV format option. 
-        ButtonGroup storeList = new ButtonGroup();
+        storeList = new ButtonGroup();
         jWooCommerceButton.setSelected(true);
         storeList.add(jShopifyButton);
         storeList.add(jWooCommerceButton);
         storeList.add(jBigCartelButton);
         // Create ButtonGroup for the filename option.
-        ButtonGroup fileNameGroup = new ButtonGroup();
+        fileNameGroup = new ButtonGroup();
         jButtonOrderNumber.setSelected(true);
         fileNameGroup.add(jButtonTime);
         fileNameGroup.add(jButtonName);
@@ -87,8 +89,7 @@ public class MainWindow extends javax.swing.JFrame {
 // storeVersion - The output of storeList.getSelected().toString().
 // I.E, the store selected under "Settings".
 
-    public ArrayList<customer> processCSV(String storeVersion) throws FileNotFoundException, IOException {
-        ArrayList<customer> customerList = new ArrayList<>();
+    public void processCSV(String storeVersion) throws FileNotFoundException, IOException {
 
         if (storeVersion.compareTo("BigCartel") == 0) {
             File f;
@@ -144,11 +145,11 @@ public class MainWindow extends javax.swing.JFrame {
                     throw new IOException();
                 }
             }
-        } else if(storeVersion.compareTo("WooCommerce") == 0)
-        {
-            /*** Not implemented yet! ***/
+        } else if (storeVersion.compareTo("WooCommerce") == 0) {
+            /**
+             * * Not implemented yet! **
+             */
         }
-        return customerList;
     }
 
     @SuppressWarnings("unchecked")
@@ -157,7 +158,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        jGoButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jBigCartelButton = new javax.swing.JRadioButton();
         jShopifyButton = new javax.swing.JRadioButton();
@@ -175,14 +176,14 @@ public class MainWindow extends javax.swing.JFrame {
         jButton_Template = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel6 = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
+        jDeleteOldOrders = new javax.swing.JRadioButton();
         jLabel7 = new javax.swing.JLabel();
         jButtonTime = new javax.swing.JRadioButton();
         jButtonName = new javax.swing.JRadioButton();
         jButtonOrderNumber = new javax.swing.JRadioButton();
         jLabel8 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jTextField_Output = new javax.swing.JTextField();
+        jButton_Output = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JSeparator();
         jCheckBox1 = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
@@ -190,11 +191,16 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jDebugConsole = new javax.swing.JTextArea();
-        jCheckBox4 = new javax.swing.JCheckBox();
+        VerboseErrorMessages = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton2.setText("Go");
+        jGoButton.setText("Go");
+        jGoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jGoButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -202,14 +208,14 @@ public class MainWindow extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(954, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(jGoButton)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(684, Short.MAX_VALUE)
-                .addComponent(jButton2)
+                .addComponent(jGoButton)
                 .addContainerGap())
         );
 
@@ -220,6 +226,7 @@ public class MainWindow extends javax.swing.JFrame {
         jShopifyButton.setText("Shopify");
 
         jWooCommerceButton.setText("WooCommerce");
+        jWooCommerceButton.setEnabled(false);
 
         jLabel1.setText("orders.csv Format");
 
@@ -232,6 +239,11 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         jButton_CSV.setText("Browse");
+        jButton_CSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CSVActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Template Format");
 
@@ -243,6 +255,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         jLabelSheetButton.setText("Label Sheet");
+        jLabelSheetButton.setEnabled(false);
 
         jLabel5.setText("Template Location");
 
@@ -253,14 +266,21 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         jButton_Template.setText("Browse");
+        jButton_Template.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_TemplateActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Output Folder Settings");
 
-        jRadioButton1.setText("Delete old orders");
+        jDeleteOldOrders.setText("Delete old orders");
+        jDeleteOldOrders.setEnabled(false);
 
         jLabel7.setText("Filename");
 
-        jButtonTime.setText("Time of Order");
+        jButtonTime.setText("Time Of Order");
+        jButtonTime.setEnabled(false);
         jButtonTime.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonTimeActionPerformed(evt);
@@ -273,7 +293,12 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel8.setText("Output Folder Location");
 
-        jButton1.setText("Browse");
+        jButton_Output.setText("Browse");
+        jButton_Output.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_OutputActionPerformed(evt);
+            }
+        });
 
         jCheckBox1.setText("Save settings on exit?");
 
@@ -337,13 +362,13 @@ public class MainWindow extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jRadioButton1))
+                        .addComponent(jDeleteOldOrders))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
+                        .addComponent(jButton_Output)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTextField_Output, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
@@ -396,12 +421,12 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                    .addComponent(jTextField_Output, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_Output))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jRadioButton1))
+                    .addComponent(jDeleteOldOrders))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -430,7 +455,7 @@ public class MainWindow extends javax.swing.JFrame {
         jDebugConsole.setRows(5);
         jScrollPane1.setViewportView(jDebugConsole);
 
-        jCheckBox4.setText("Verbose Error Messages");
+        VerboseErrorMessages.setText("Verbose Error Messages");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -443,7 +468,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jCheckBox4))
+                            .addComponent(VerboseErrorMessages))
                         .addGap(0, 820, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -455,7 +480,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 612, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox4)
+                .addComponent(VerboseErrorMessages)
                 .addContainerGap(40, Short.MAX_VALUE))
         );
 
@@ -495,6 +520,92 @@ public class MainWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButtonTimeActionPerformed
 
+    private void jGoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jGoButtonActionPerformed
+        //first check to see if all data forms are inputted
+        if (csvFilePath.length() == 0 || templateFilePath.length() == 0 || outputFilePath.length() == 0) {
+            JOptionPane.showMessageDialog(this, "Please go under \"Settings\" and select the appropriate file locations.");
+            return;
+        }
+
+        // now, we need to populate CustomerList with the customers in the list.
+        customerList = new ArrayList<>();       //before we do that, we get rid of any old customers.
+        // process the CSV:
+        try {
+            if(jBigCartelButton.isSelected())
+            {
+                processCSV("BigCartel");
+            }else if(jShopifyButton.isSelected())
+            {
+                processCSV("Shopify");
+            }
+            else
+            {
+                /*** To be implemented! ***/
+                jDebugConsole.setText(jDebugConsole.getText() + " Encountered error with store buttons \n");
+            }
+        } catch (Exception e) {
+            if (VerboseErrorMessages.isSelected()) {
+                jDebugConsole.setText(jDebugConsole.getText() + "exception " + e.toString() + " occured during CSV order processing." + "\n");
+            }
+        }
+        
+        // We want to handle if the user wants to delete the old orders inside the selected folder.
+        if(jDeleteOldOrders.isSelected())
+        {
+            /*** To be implemented! ***/
+        }
+        
+        // good. now let's iterate through the newly populated customerlist and print our orders.
+        System.out.println(fileNameGroup.getSelection().toString());
+        for (customer temp : customerList) {
+            if (jButtonOrderNumber.isSelected()) {
+                try {
+                    System.out.println(temp.orderNumber);
+                    PrintEnvelope(temp.orderNumber, temp);
+                } catch (Exception e) {
+                    if (VerboseErrorMessages.isSelected()) {
+                        jDebugConsole.setText(jDebugConsole.getText() + "exception " + e.toString() + " occured during order printing with customer " + temp.toString() + "\n");
+                    }
+                }
+            } else if(jButtonName.isSelected())
+            {
+                try {
+                    PrintEnvelope(temp.name + " " + temp.orderNumber, temp);
+                } catch (Exception e) {
+                    if (VerboseErrorMessages.isSelected()) {
+                        jDebugConsole.setText(jDebugConsole.getText() + "exception " + e.toString() + " occured during order printing with customer " + temp.toString() + "\n");
+                    }
+                }
+            } else if(fileNameGroup.getSelection().toString().compareTo("Time Of Order") == 0)
+            {
+                /*** To be implemented! ***/ 
+            }
+        }
+
+    }//GEN-LAST:event_jGoButtonActionPerformed
+
+    private void jButton_CSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CSVActionPerformed
+        final JFileChooser fc = new JFileChooser();
+        int retval = fc.showOpenDialog(fc);
+        csvFilePath = fc.getSelectedFile().getAbsolutePath();
+        jTextArea_CSV.setText(csvFilePath);
+    }//GEN-LAST:event_jButton_CSVActionPerformed
+
+    private void jButton_TemplateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_TemplateActionPerformed
+        final JFileChooser fc = new JFileChooser();
+        int retval = fc.showOpenDialog(fc);
+        templateFilePath = fc.getSelectedFile().getAbsolutePath();
+        jTextArea_Template.setText(templateFilePath);
+    }//GEN-LAST:event_jButton_TemplateActionPerformed
+
+    private void jButton_OutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OutputActionPerformed
+        final JFileChooser fc = new JFileChooser();
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int retval = fc.showOpenDialog(fc);
+            outputFilePath = fc.getSelectedFile().getAbsolutePath();
+            jTextField_Output.setText(outputFilePath);
+    }//GEN-LAST:event_jButton_OutputActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -528,18 +639,19 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox VerboseErrorMessages;
     private javax.swing.JRadioButton jBigCartelButton;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JRadioButton jButtonName;
     private javax.swing.JRadioButton jButtonOrderNumber;
     private javax.swing.JRadioButton jButtonTime;
     private javax.swing.JButton jButton_CSV;
+    private javax.swing.JButton jButton_Output;
     private javax.swing.JButton jButton_Template;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JTextArea jDebugConsole;
+    private javax.swing.JRadioButton jDeleteOldOrders;
     private javax.swing.JRadioButton jEnvelopeButton;
+    private javax.swing.JButton jGoButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -553,7 +665,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -562,7 +673,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextField jTextArea_CSV;
     private javax.swing.JTextField jTextArea_Template;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField_Output;
     private javax.swing.JRadioButton jWooCommerceButton;
     // End of variables declaration//GEN-END:variables
 }

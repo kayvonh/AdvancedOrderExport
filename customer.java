@@ -1,16 +1,6 @@
 
-
-/**
- * *****************************************
- */
-/* Customer                                 */
-/*------------------------------------------*/
-/* Contains address information, order time */
-/* and other relevant info about individual */
-/* orders.                                  */
-/**
- * *****************************************
- */
+/* Customer is a container object for individual envelope orders. Does a little bit of helpful string
+preprocessing for MainWindow.h, mostly string formatting. */
 public class customer {
 
     public String name;
@@ -28,48 +18,55 @@ public class customer {
                 + "\n" + country + "\n\n";
     }
 
+    //Take string line from a Bigcartel orders.csv, set the customer equal to its data.
     public void fromBigCartel(String input) {
-        String fields[] = input.split(",");
-        if (fields[8].compareTo("shipped") == 0) {
-            shippedStatus = true;
-        }else
-        {
-            shippedStatus = false;
-        }
-        orderNumber = fields[0];
-        name = fields[1] + " " + fields[2];
+        String fields[] = input.split(",");         //split CSV into array of its data values. 
+        orderNumber = fields[0];                    //prepopulate basic info
         address1 = fields[9];
-        if (fields[10].compareTo("\"\"") != 0) {
-            address2 = fields[10];
-        } else {
-            address2 = "";
-        }
         city = fields[11];
         state = fields[12];
         zip = fields[13];
         country = fields[14];
+        name = fields[1] + " " + fields[2];         // combine names together. 
+        
+        /* boundary cases that require some simple processing.*/
+        if (fields[8].compareTo("shipped") == 0) {  // has the order been shipped already?
+            shippedStatus = true;
+        } else {
+            shippedStatus = false;
+        }
+        
+        if (fields[10].compareTo("\"\"") != 0) {  //CSVs save the null character as "".
+            address2 = fields[10];
+        } else {
+            address2 = "";                        // Convert address 2 to the null character.
+        }
     }
 
+    // Take string line from a Bigcartel orders.csv, set the customer equal to its data. 
     public void fromShopify(String input) {
-        String fields[] = input.split(",");
-        if(fields[4].compareTo("unfulfilled")== 0)
-        {
-            shippedStatus = false;
-        }else
-        {
-            shippedStatus = true;
-        }
-            
+        String fields[] = input.split(",");        //split CSV into array of its data values. 
         orderNumber = fields[0];
         name = fields[34];
         address1 = fields[37];
-        address2 = fields[38];
         city = fields[40];
         state = fields[42];
         zip = fields[41];
         country = fields[43];
+        
+         if (fields[38].compareTo("\"\"") != 0) {  //CSVs save the null character as "".
+            address2 = fields[38];
+        } else {
+            address2 = "";                        // Convert address 2 to the null character.
+        }
+         
+        if (fields[4].compareToIgnoreCase("unfulfilled") == 0) {  // has the order been shipped already?
+            shippedStatus = true;
+        } else {
+            shippedStatus = false;
+        }
     }
-
+    // Used by the export process, this returns a value by an arbitrary position.
     public String printIdentifier(int identifier) {
         switch (identifier) {
             case 0:
