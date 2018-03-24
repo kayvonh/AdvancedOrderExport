@@ -9,6 +9,7 @@ public class customer {
     public String city;
     public String state;
     public String zip;
+    public String timeString;
     public String country;
     public String orderNumber;
     public boolean shippedStatus;
@@ -25,6 +26,7 @@ public class customer {
         address1 = fields[9];
         city = fields[11];
         state = fields[12];
+        timeString = fields[4];
         zip = fields[13];
         country = fields[14];
         name = fields[1] + " " + fields[2];         // combine names together. 
@@ -51,6 +53,7 @@ public class customer {
         address1 = fields[37];
         city = fields[40];
         state = fields[42];
+        timeString = fields[3];
         zip = fields[41];
         country = fields[43];
         
@@ -61,9 +64,9 @@ public class customer {
         }
          
         if (fields[4].compareToIgnoreCase("unfulfilled") == 0) {  // has the order been shipped already?
-            shippedStatus = true;
-        } else {
             shippedStatus = false;
+        } else {
+            shippedStatus = true;
         }
     }
     // Used by the export process, this returns a value by an arbitrary position.

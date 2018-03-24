@@ -206,17 +206,17 @@ public class MainWindow extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(954, Short.MAX_VALUE)
-                .addComponent(jGoButton)
-                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jGoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(864, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(684, Short.MAX_VALUE)
-                .addComponent(jGoButton)
-                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jGoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(637, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Main", jPanel1);
@@ -280,7 +280,6 @@ public class MainWindow extends javax.swing.JFrame {
         jLabel7.setText("Filename");
 
         jButtonTime.setText("Time Of Order");
-        jButtonTime.setEnabled(false);
         jButtonTime.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonTimeActionPerformed(evt);
@@ -301,6 +300,7 @@ public class MainWindow extends javax.swing.JFrame {
         });
 
         jCheckBox1.setText("Save settings on exit?");
+        jCheckBox1.setEnabled(false);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -531,16 +531,14 @@ public class MainWindow extends javax.swing.JFrame {
         customerList = new ArrayList<>();       //before we do that, we get rid of any old customers.
         // process the CSV:
         try {
-            if(jBigCartelButton.isSelected())
-            {
+            if (jBigCartelButton.isSelected()) {
                 processCSV("BigCartel");
-            }else if(jShopifyButton.isSelected())
-            {
+            } else if (jShopifyButton.isSelected()) {
                 processCSV("Shopify");
-            }
-            else
-            {
-                /*** To be implemented! ***/
+            } else {
+                /**
+                 * * To be implemented! **
+                 */
                 jDebugConsole.setText(jDebugConsole.getText() + " Encountered error with store buttons \n");
             }
         } catch (Exception e) {
@@ -548,27 +546,26 @@ public class MainWindow extends javax.swing.JFrame {
                 jDebugConsole.setText(jDebugConsole.getText() + "exception " + e.toString() + " occured during CSV order processing." + "\n");
             }
         }
-        
+
         // We want to handle if the user wants to delete the old orders inside the selected folder.
-        if(jDeleteOldOrders.isSelected())
-        {
-            /*** To be implemented! ***/
+        if (jDeleteOldOrders.isSelected()) {
+            /**
+             * * To be implemented! **
+             */
         }
-        
+
         // good. now let's iterate through the newly populated customerlist and print our orders.
         System.out.println(fileNameGroup.getSelection().toString());
         for (customer temp : customerList) {
             if (jButtonOrderNumber.isSelected()) {
                 try {
-                    System.out.println(temp.orderNumber);
                     PrintEnvelope(temp.orderNumber, temp);
                 } catch (Exception e) {
                     if (VerboseErrorMessages.isSelected()) {
                         jDebugConsole.setText(jDebugConsole.getText() + "exception " + e.toString() + " occured during order printing with customer " + temp.toString() + "\n");
                     }
                 }
-            } else if(jButtonName.isSelected())
-            {
+            } else if (jButtonName.isSelected()) {
                 try {
                     PrintEnvelope(temp.name + " " + temp.orderNumber, temp);
                 } catch (Exception e) {
@@ -576,12 +573,16 @@ public class MainWindow extends javax.swing.JFrame {
                         jDebugConsole.setText(jDebugConsole.getText() + "exception " + e.toString() + " occured during order printing with customer " + temp.toString() + "\n");
                     }
                 }
-            } else if(fileNameGroup.getSelection().toString().compareTo("Time Of Order") == 0)
-            {
-                /*** To be implemented! ***/ 
+            } else if (jButtonTime.isSelected()) {
+                try {
+                    PrintEnvelope(temp.timeString, temp);
+                } catch (Exception e) {
+                    if (VerboseErrorMessages.isSelected()) {
+                        jDebugConsole.setText(jDebugConsole.getText() + "exception " + e.toString() + " occured during order printing with customer " + temp.toString() + "\n");
+                    }
+                }
             }
         }
-
     }//GEN-LAST:event_jGoButtonActionPerformed
 
     private void jButton_CSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CSVActionPerformed
@@ -600,10 +601,10 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void jButton_OutputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OutputActionPerformed
         final JFileChooser fc = new JFileChooser();
-            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int retval = fc.showOpenDialog(fc);
-            outputFilePath = fc.getSelectedFile().getAbsolutePath();
-            jTextField_Output.setText(outputFilePath);
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int retval = fc.showOpenDialog(fc);
+        outputFilePath = fc.getSelectedFile().getAbsolutePath();
+        jTextField_Output.setText(outputFilePath);
     }//GEN-LAST:event_jButton_OutputActionPerformed
 
     public static void main(String args[]) {
