@@ -4,10 +4,10 @@ Currently working:
 - Import from Bigcartel
 - Import from Shopify
 - Export to file
+- Import from Woocommerce
 
 On the way: 
 
 - Upload template
-- Import from Woocommerce
 - Import from Custom
 - Advanced sorting
